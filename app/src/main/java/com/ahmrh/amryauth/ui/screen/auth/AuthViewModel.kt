@@ -1,6 +1,9 @@
 package com.ahmrh.amryauth.ui.screen.auth
 
+import android.os.CountDownTimer
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahmrh.amryauth.common.UiState
@@ -24,9 +27,12 @@ class AuthViewModel @Inject constructor(
     val authsUiState: StateFlow<UiState<List<Auth>>>
         get() = _authsUiState
 
+    private var _timeLiveData: MutableLiveData<Long> = MutableLiveData(0)
+    val timeLiveData: LiveData<Long> get() = _timeLiveData
+
     init {
         initUi()
-
+        startTimer()
     }
 
     private fun initUi(){
@@ -38,22 +44,37 @@ class AuthViewModel @Inject constructor(
                     _authsUiState.emit(UiState.Error(e.localizedMessage.toString()))
                 }
                 .collect { auths ->
-                    _authsUiState.emit(UiState.Success())
+                    _authsUiState.emit(UiState.Success(auths))
                 }
         }
     }
 
-    private fun generateTOTP(key: String){
-        val py = Python.getInstance()
-        val module = py.getModule( "TOTP" )
-        val TOTP = module["getTOTP"]
+    private fun startTimer(){
+        val timer = object : CountDownTimer(15000, 1000){
 
+            override fun onTick(millisUntilFinished: Long) {
+                _timeLiveData.value = millisUntilFinished / 1000
+            }
 
+            override fun onFinish() {
+
+            }
+        }
+        timer.start()
     }
 
-    fun insertAuth(token: String) {
+    fun generateTOTP(key: String): String{
+        val py = Python.getInstance()
+        val module = py.getModule( "TOTP" )
+        val getTOTP = module["getTOTP"]
+        val TOTP = getTOTP?.call(key.toByteArray())
+
+        return "$TOTP"
+    }
+
+    fun insertAuth(key: String, username: String) {
         viewModelScope.launch {
-            repository.insertAuth(Auth(token = token))
+            repository.insertAuth(Auth(username = username, key = key))
             Log.d(TAG, authsUiState.value.toString())
         }
     }
@@ -66,6 +87,13 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun deleteAuthById(id: Int){
+        viewModelScope.launch{
+            repository.deleteAuthById(id)
+            Log.d(TAG, authsUiState.value.toString())
+
+        }
+    }
     companion object {
         private const val TAG = "AuthViewModel"
     }

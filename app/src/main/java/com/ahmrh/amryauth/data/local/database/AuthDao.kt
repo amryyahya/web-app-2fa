@@ -15,6 +15,9 @@ interface AuthDao {
     @Delete
     suspend fun delete(auth: Auth)
 
+    @Query("DELETE FROM auth WHERE id = :id")
+    suspend fun deleteById(id: Int)
+
     @Query("SELECT * FROM auth")
     fun getAllAuths(): Flow<List<Auth>>
 }

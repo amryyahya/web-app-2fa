@@ -1,6 +1,8 @@
 package com.ahmrh.amryauth
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -58,7 +60,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun googleCodeScanner(insertAuth: (String) -> Unit) {
+    private fun googleCodeScanner(insertAuth: (String, String) -> Unit) {
         val options = GmsBarcodeScannerOptions.Builder()
             .setBarcodeFormats(
                 Barcode.FORMAT_QR_CODE,
@@ -73,7 +75,12 @@ class MainActivity : ComponentActivity() {
                 Toast.makeText(this, "Barcode found", Toast.LENGTH_LONG).show()
 
                 val url = barcode.url!!.url
-                insertAuth(url ?: "Unidentified Url")
+//                val url = "otpauth://totp/:Amry%20Site?secret=POFARSCDUPTMDH6JAOGLNDA2RYK77JVA&user=amryyahya@mail.com"
+
+                val key = Uri.parse(url).getQueryParameter("secret")
+                val username = Uri.parse(url).getQueryParameter("user")
+                Log.d("MainActivity", "url: $url, key: $key, user: $username")
+                insertAuth(key ?: "Unidentified Key", username ?: "Unnamed Entity")
             }
             .addOnCanceledListener {
                 // Task canceled

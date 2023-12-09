@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,26 +15,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ahmrh.amryauth.data.local.database.Auth
 import com.ahmrh.amryauth.ui.theme.AmryAuthTheme
 
 @Composable
 fun AuthItem(
     modifier: Modifier = Modifier,
-    auth: Auth? = null
+    username: String? = null,
+    token: String? = null,
+    ticks: Int = 1,
+    maxTick: Int = 30,
 ){
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp,)
     ){
-        Text(auth?.token ?: "Identifier", fontSize = 24.sp)
+        Text(username ?: "Unidentified", fontSize = 24.sp)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ){
-            Text( auth?.token ?: "123 456", fontSize = 32.sp, color = MaterialTheme.colorScheme.primary)
+            Text( token ?: "000 000", fontSize = 32.sp, color = MaterialTheme.colorScheme.primary)
 
-            CircularProgressIndicator()
+            Indicator(sweepAngle = ticks / maxTick.toFloat() * 360)
 
         }
 

@@ -28,8 +28,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -41,6 +45,8 @@ import com.ahmrh.amryauth.common.UiState
 import com.ahmrh.amryauth.data.local.database.Auth
 import com.ahmrh.amryauth.ui.components.AuthItem
 import com.ahmrh.amryauth.ui.theme.AmryAuthTheme
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,11 +90,11 @@ fun AuthScreen(
 
             when (val uiState = viewModel.authsUiState.collectAsState().value) {
                 is UiState.Idle -> {
-                    AuthList(emptyList())
+                    LoadingView()
                 }
 
                 is UiState.Loading -> {
-                    Loading()
+                    LoadingView()
                 }
 
                 is UiState.Success -> {
@@ -97,13 +103,23 @@ fun AuthScreen(
                 }
 
                 is UiState.Error -> {
-                    Error(uiState.errorMessage)
+                    ErrorView(uiState.errorMessage)
                 }
             }
 
         }
 
 
+    }
+}
+
+@Composable
+fun LoadingView(){
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
 
@@ -114,7 +130,7 @@ fun AuthList(
     viewModel: AuthViewModel? = null,
 ) {
     LazyColumn(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier.padding( vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(list) { auth ->
@@ -122,7 +138,7 @@ fun AuthList(
             val dismissState = rememberDismissState()
 
             if (dismissState.isDismissed(direction = DismissDirection.EndToStart)) {
-                viewModel?.deleteAuth(auth)
+                viewModel?.deleteAuthById(auth.id)
             }
             SwipeToDismiss(
                 state = dismissState,
@@ -163,8 +179,20 @@ fun AuthList(
                     }
                 },
                 dismissContent = {
-
-                    AuthItem(auth = auth)
+                    var ticks by remember { mutableStateOf(0) }
+                    var token by remember { mutableStateOf("${viewModel?.generateTOTP(auth.key)}")}
+                    val maxTick = 15
+                    LaunchedEffect(Unit) {
+                        while(true) {
+                            delay(1.seconds)
+                            ticks++
+                            if(ticks == maxTick) {
+                                ticks = 1
+                                token = "${viewModel?.generateTOTP(auth.key)}"
+                            }
+                        }
+                    }
+                    AuthItem(token = token, ticks = ticks, maxTick = maxTick, username = auth.username)
                 }
             )
         }
@@ -174,13 +202,13 @@ fun AuthList(
 
 
 @Composable
-fun Loading() {
-    CircularProgressIndicator()
-}
-
-@Composable
-fun Error(errorMessage: String) {
-    Text(errorMessage)
+fun ErrorView(errorMessage: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(errorMessage)
+    }
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)

@@ -14,4 +14,5 @@ class Repository(
     suspend fun insertAuth(auth: Auth) = authDao.insert(auth)
 
     suspend fun deleteAuth(auth: Auth) = authDao.delete(auth)
+    suspend fun deleteAuthById(id: Int) = authDao.deleteById(id)
 }
