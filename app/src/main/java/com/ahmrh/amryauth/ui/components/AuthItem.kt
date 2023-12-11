@@ -22,7 +22,7 @@ fun AuthItem(
     modifier: Modifier = Modifier,
     username: String? = null,
     token: String? = null,
-    ticks: Int = 1,
+    ticks: Long = 1,
     maxTick: Int = 30,
 ){
     Column(

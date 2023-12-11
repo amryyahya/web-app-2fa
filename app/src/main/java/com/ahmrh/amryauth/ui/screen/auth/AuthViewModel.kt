@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.ahmrh.amryauth.common.UiState
 import com.ahmrh.amryauth.data.Repository
 import com.ahmrh.amryauth.data.local.database.Auth
-import com.chaquo.python.Python
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,15 +60,6 @@ class AuthViewModel @Inject constructor(
             }
         }
         timer.start()
-    }
-
-    fun generateTOTP(key: String): String{
-        val py = Python.getInstance()
-        val module = py.getModule( "TOTP" )
-        val getTOTP = module["getTOTP"]
-        val TOTP = getTOTP?.call(key.toByteArray())
-
-        return "$TOTP"
     }
 
     fun insertAuth(key: String, username: String) {

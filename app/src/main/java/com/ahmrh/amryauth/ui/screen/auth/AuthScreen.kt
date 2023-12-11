@@ -1,6 +1,7 @@
 package com.ahmrh.amryauth.ui.screen.auth
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -13,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,11 +42,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.ahmrh.amryauth.common.TOTPFunction
 import com.ahmrh.amryauth.common.UiState
 import com.ahmrh.amryauth.data.local.database.Auth
 import com.ahmrh.amryauth.ui.components.AuthItem
 import com.ahmrh.amryauth.ui.theme.AmryAuthTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -119,7 +122,7 @@ fun LoadingView(){
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        Text("Loading")
     }
 }
 
@@ -179,17 +182,28 @@ fun AuthList(
                     }
                 },
                 dismissContent = {
-                    var ticks by remember { mutableStateOf(0) }
-                    var token by remember { mutableStateOf("${viewModel?.generateTOTP(auth.key)}")}
-                    val maxTick = 15
+                    var ticks by remember { mutableStateOf(0L) }
+                    var token by remember { mutableStateOf(TOTPFunction.generate(auth.key))}
+                    val coroutineScope = rememberCoroutineScope()
+
+                    val maxTick = 30
                     LaunchedEffect(Unit) {
                         while(true) {
                             delay(1.seconds)
-                            ticks++
-                            if(ticks == maxTick) {
-                                ticks = 1
-                                token = "${viewModel?.generateTOTP(auth.key)}"
+                            val time = System.currentTimeMillis() / 1000
+                            ticks = time % maxTick
+                            Log.d("MainActivity", "Ticks: $ticks")
+                            if(time % maxTick == 0L){
+                                Log.d("MainActivity", "Token changed to $token at $ticks")
+                                coroutineScope.launch{
+                                    token = TOTPFunction.generate(auth.key)
+                                }
                             }
+//                            ticks++
+//                            if(ticks == maxTick) {
+//                                ticks = 1
+//                                token = "${viewModel?.generateTOTP(auth.key)}"
+//                            }
                         }
                     }
                     AuthItem(token = token, ticks = ticks, maxTick = maxTick, username = auth.username)
