@@ -1,14 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web App 2FA Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <title>TOTP Setup and Verification</title>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <h2>Scan This Using Photon-Auth</h2>
-    <img src="{{ qrcode_image }}" class="rounded mx-auto d-block" alt="...">
+
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6" id="section1">
+
+        <div class="card">
+          <div class="card-header">
+            <h1 class="text-center">TOTP Setup</h1>
+          </div>
+          <div class="card-body text-center">
+
+            <p class="card-text">Scan the QR code below with Photon Authenticator:</p>
+            <img src="data:image/jpeg;base64,{{ qrcode_image }}" alt="Image" class="img-fluid" /><br>
+            <button type="button" class="btn btn-primary" id="haveScanned">Done</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="container mt-5 hidden" id="section2">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+
+        <div class="card">
+          <div class="card-header">
+            <h1 class="text-center">TOTP Verification</h1>
+          </div>
+          <div class="card-body">
+
+            <form>
+              <div class="form-group">
+                <label for="totpInput">Enter TOTP Code:</label>
+                <input type="text" class="form-control" id="totpInput" name="totpInput" placeholder="Enter your TOTP code" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">Verify</button>
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $("#haveScanned").click(function () {
+        $("#section1").toggleClass("hidden");
+        $("#section2").removeClass('hidden');
+      });
+    });
+  </script>
+
 </body>
+</html>
