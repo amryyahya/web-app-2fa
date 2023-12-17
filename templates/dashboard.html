@@ -32,6 +32,9 @@
   </nav>
 
   <main class="container mt-3">
+    <div id="infoBox" class="alert alert-info d-none">
+      <p class="mb-0" id="infoContent">{{info}}</p>
+    </div>
     <section id="section1">
       <h2>My Data</h2>
       <div class="mb-3 row">
@@ -55,13 +58,19 @@
     </section>
 
     <section id="section2">
-      <h2>Setting</h2>  
-     <a href="/two-factor-auth">strange</a>
+      <h2>Setting</h2>
+      <a href="/2fa-setup">strange</a>
     </section>
 
 
   </main>
-
+  <script>
+    var infoContent = document.getElementById("infoContent");
+    if (infoContent.textContent.trim() !== '') {
+      var infoBox = document.getElementById("infoBox");
+      infoBox.classList.remove("d-none");
+    } 
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

@@ -9,10 +9,6 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
   <title>TOTP Setup and Verification</title>
-  <style>
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -36,7 +32,7 @@
     </div>
   </div>
 
-  <div class="container mt-5 hidden" id="section2">
+  <div class="container mt-5 d-none" id="section2">
     <div class="row justify-content-center">
       <div class="col-md-6">
 
@@ -46,10 +42,10 @@
           </div>
           <div class="card-body">
 
-            <form>
+            <form action="/2fa-setup" method="post">
               <div class="form-group">
-                <label for="totpInput">Enter TOTP Code:</label>
-                <input type="text" class="form-control" id="totpInput" name="totpInput" placeholder="Enter your TOTP code" required>
+                <label for="totp">Enter TOTP Code:</label>
+                <input type="text" class="form-control" id="totp" name="totp" placeholder="Enter your TOTP code" required>
               </div>
 
               <button type="submit" class="btn btn-primary btn-block">Verify</button>
@@ -65,8 +61,8 @@
   <script>
     $(document).ready(function () {
       $("#haveScanned").click(function () {
-        $("#section1").toggleClass("hidden");
-        $("#section2").removeClass('hidden');
+        $("#section1").toggleClass("d-none");
+        $("#section2").removeClass('d-none');
       });
     });
   </script>

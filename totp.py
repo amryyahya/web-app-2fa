@@ -126,16 +126,14 @@ def Photon256(plain):
                 ro-=S
         State=Permutation(State)
     return bytes(Hashed)
+    
 def hmac(key: bytes, message: bytes, hash_function):
     block_size = 32
     key = key + b'\x00' * (block_size - len(key))
-
     inner_padding = bytes(x ^ 0x36 for x in key)
     outer_padding = bytes(x ^ 0x5C for x in key)
-
     inner_hash_input = inner_padding + message
     inner_hash = hash_function(inner_hash_input)
-
     outer_hash_input = outer_padding + inner_hash
     outer_hash = hash_function(outer_hash_input)
     return outer_hash
@@ -150,4 +148,4 @@ def getTOTP(secret_key):
     totp = int.from_bytes(truncated_hash, byteorder='big') % (10**6)
     return str(totp).zfill(6)
 
-print(getTOTP(b'amry_secret_key'))
+print(getTOTP(b'nIcxFEYxH4QyjSpM'))

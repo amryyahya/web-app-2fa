@@ -40,6 +40,7 @@ def editUser(user):
 
 def getUser(email):
     conn = sqlite3.connect('users.db')
+    conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute("SELECT * FROM users WHERE email=?", (email,))
     user = cur.fetchone()
