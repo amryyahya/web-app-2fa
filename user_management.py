@@ -29,15 +29,6 @@ def insertUser(user):
     conn.close()
     return True
 
-def editUser(user):
-    conn = sqlite3.connect('users.db')
-    cur = conn.cursor()
-    cur.execute("DELETE FROM users WHERE email=?", (user.email,))
-    conn.commit()
-    conn.close()
-    insertUser(user)
-    return True
-
 def getUser(email):
     conn = sqlite3.connect('users.db')
     conn.row_factory = sqlite3.Row
@@ -56,9 +47,7 @@ def getAllUsers():
     cur = conn.cursor()
     cur.execute("SELECT * FROM users")
     rows = cur.fetchall()
-    users = []
-    for i in rows:
-        user = User(i[0],i[1], i[2],i[3],i[4],i[5])
-        users.append(user)
+    for row in rows:
+      print(row)
+    cur.close()
     conn.close()
-    return users

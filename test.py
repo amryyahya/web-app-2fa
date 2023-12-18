@@ -2,7 +2,7 @@ import hashlib, qrcode, io, os, base64, string, random, jwt, datetime
 from flask import Flask, render_template, request, jsonify, make_response,redirect, url_for, send_file, session
 from user import User
 from totp import getTOTP
-from user_management import createTable, insertUser, editUser, getAllUsers, getUser
+from user_management import createTable, insertUser, getAllUsers, getUser
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
@@ -22,6 +22,9 @@ def decryptSecretKey(encrypted):
   padded_plaintext = decryptor.update(encrypted) + decryptor.finalize()
   unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
   plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
+  print(plaintext)
   return plaintext
 
-print(decryptSecretKey('eHNDcHJSU1R0T0gzczFpbWOUJKWEjd6ZNYFSqFZHg3A_6KhMfeUHQAQ0qQaemQDn'))
+user = getUser('amry@yahya.com')
+
+print(decryptSecretKey(user['secret_key']))

@@ -31,8 +31,11 @@
                                 <input type="text" class="form-control" id="totp" name="totp"
                                     placeholder="Enter your TOTP code" required>
                             </div>
-
+                            <div id="infoBox" class="alert alert-danger d-none">
+                                <p class="mb-0" id="infoContent">{{info}}</p>
+                              </div>
                             <button type="submit" class="btn btn-primary btn-block">Verify</button>
+       
                         </form>
 
                     </div>
@@ -41,7 +44,13 @@
             </div>
         </div>
     </div>
-
+    <script>
+        var infoContent = document.getElementById("infoContent");
+        if (infoContent.textContent.trim() !== '') {
+          var infoBox = document.getElementById("infoBox");
+          infoBox.classList.remove("d-none");
+        } 
+      </script>
 
 </body>
 

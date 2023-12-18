@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,11 +12,12 @@
   <title>TOTP Setup and Verification</title>
   </style>
 </head>
+
 <body>
 
   <div class="container mt-5">
     <div class="row justify-content-center">
-      <div class="col-md-6" id="section1">
+      <div class="col-md-6">
 
         <div class="card">
           <div class="card-header">
@@ -25,47 +27,13 @@
 
             <p class="card-text">Scan the QR code below with Photon Authenticator:</p>
             <img src="data:image/jpeg;base64,{{ qrcode_image }}" alt="Image" class="img-fluid" /><br>
-            <button type="button" class="btn btn-primary" id="haveScanned">Done</button>
-        </div>
+            <a href="/2fa-verify" class="btn btn-primary">Done</a>
+          </div>
 
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="container mt-5 d-none" id="section2">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-
-        <div class="card">
-          <div class="card-header">
-            <h1 class="text-center">TOTP Verification</h1>
-          </div>
-          <div class="card-body">
-
-            <form action="/2fa-setup" method="post">
-              <div class="form-group">
-                <label for="totp">Enter TOTP Code:</label>
-                <input type="text" class="form-control" id="totp" name="totp" placeholder="Enter your TOTP code" required>
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-block">Verify</button>
-            </form>
-
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <script>
-    $(document).ready(function () {
-      $("#haveScanned").click(function () {
-        $("#section1").toggleClass("d-none");
-        $("#section2").removeClass('d-none');
-      });
-    });
-  </script>
 
 </body>
+
 </html>
