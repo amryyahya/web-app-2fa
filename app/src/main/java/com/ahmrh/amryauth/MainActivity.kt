@@ -13,10 +13,11 @@ import androidx.navigation.compose.rememberNavController
 import com.ahmrh.amryauth.ui.navigation.Screen
 import com.ahmrh.amryauth.ui.screen.auth.AuthScreen
 import com.ahmrh.amryauth.ui.screen.auth.AuthViewModel
-import com.ahmrh.amryauth.ui.screen.scanner.ScannerScreen
 import com.ahmrh.amryauth.ui.theme.AmryAuthTheme
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import com.google.android.gms.common.moduleinstall.ModuleInstall
+import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
@@ -27,6 +28,24 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val moduleInstallClient = ModuleInstall.getClient(this)
+
+        val moduleInstallRequest = ModuleInstallRequest.newBuilder()
+            .addApi(GmsBarcodeScanning.getClient(this))
+            .build()
+        moduleInstallClient
+            .installModules(moduleInstallRequest)
+            .addOnSuccessListener {
+                if (it.areModulesAlreadyInstalled()) {
+                    // Modules are already installed when the request is sent.
+                    Log.d("MainActivity", "Module successfully installed")
+                }
+            }
+            .addOnFailureListener {
+                // Handle failure…
+                Log.e("MainActivity", "Failed to install module : $it")
+            }
 
         if( !Python.isStarted()) {
             Python.start(AndroidPlatform(this))
@@ -51,7 +70,6 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route = Screen.Scanner.route) {
 
-                        ScannerScreen(navHostController = navController)
                     }
                 }
             }
@@ -89,6 +107,7 @@ class MainActivity : ComponentActivity() {
             .addOnFailureListener { e ->
                 // Task failed with an exception
                 Toast.makeText(this, "Failure", Toast.LENGTH_LONG).show()
+                Log.e("MainActivity", "Failure with error ${e}")
             }
     }
 
