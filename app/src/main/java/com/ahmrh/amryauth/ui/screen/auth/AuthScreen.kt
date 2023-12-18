@@ -2,6 +2,7 @@ package com.ahmrh.amryauth.ui.screen.auth
 
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -142,6 +144,8 @@ fun AuthList(
 
             if (dismissState.isDismissed(direction = DismissDirection.EndToStart)) {
                 viewModel?.deleteAuthById(auth.id)
+
+                Toast.makeText(LocalContext.current, "Auth ${auth.username} Deleted", Toast.LENGTH_LONG).show()
             }
             SwipeToDismiss(
                 state = dismissState,
@@ -193,17 +197,15 @@ fun AuthList(
                             val time = System.currentTimeMillis() / 1000
                             ticks = time % maxTick
                             Log.d("MainActivity", "Ticks: $ticks")
+
                             if(time % maxTick == 0L){
                                 Log.d("MainActivity", "Token changed to $token at $ticks")
+                                token = "Generating"
                                 coroutineScope.launch{
+                                    delay(1.seconds)
                                     token = TOTPFunction.generate(auth.key)
                                 }
                             }
-//                            ticks++
-//                            if(ticks == maxTick) {
-//                                ticks = 1
-//                                token = "${viewModel?.generateTOTP(auth.key)}"
-//                            }
                         }
                     }
                     AuthItem(token = token, ticks = ticks, maxTick = maxTick, username = auth.username)

@@ -69,12 +69,12 @@ class MainActivity : ComponentActivity() {
             .enableAutoZoom() // available on 16.1.0 and higher
             .build()
 
-        val scanner = GmsBarcodeScanning.getClient(this, options)
+        val scanner = GmsBarcodeScanning.getClient(this)
         scanner.startScan()
             .addOnSuccessListener { barcode ->
-                Toast.makeText(this, "Barcode found", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Barcode found ", Toast.LENGTH_LONG).show()
 
-                val url = barcode.url!!.url
+                val url = barcode.rawValue
 //                val url = "otpauth://totp/:Amry%20Site?secret=POFARSCDUPTMDH6JAOGLNDA2RYK77JVA&user=amryyahya@mail.com"
 
                 val key = Uri.parse(url).getQueryParameter("secret")
