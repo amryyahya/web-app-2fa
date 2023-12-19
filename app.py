@@ -3,7 +3,7 @@ from user import User
 import os
 from utils import generateLoginToken, verifyLoginToken, hashPassword, secretKeyGenerator, encryptSecretKey, decryptSecretKey, generateQrCode
 from totp import getTOTP
-from user_management import createTable, insertUser, getUser
+from user_management import createTable, insertUser, getUser, deleteUser
 from os.path import join, dirname
 from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
@@ -117,6 +117,12 @@ def verifyTwoFactorAuth():
     resp.set_cookie('token',generateLoginToken(email))
     return resp
   return render_template('totp.html',info="Incorrect TOTP Code")
+
+@app.route('/delete-account')
+def deleteAccount():
+  email = verifyLoginToken(request.cookies.get('token'))
+  if deleteUser(email):
+    return redirect(url_for('logout'))
 
 @app.route('/logout')
 def logout():

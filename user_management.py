@@ -42,6 +42,14 @@ def getUser(email):
     else:
       return False
 
+def deleteUser(email):
+    conn = sqlite3.connect('users.db')
+    cur = conn.cursor()
+    cur.execute("DELETE FROM users WHERE email=?", (email,))
+    conn.commit()
+    conn.close()
+    return True
+
 def getAllUsers():
     conn = sqlite3.connect('users.db')
     cur = conn.cursor()
