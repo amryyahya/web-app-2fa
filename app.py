@@ -111,7 +111,7 @@ def verifyTwoFactorAuth():
   if totp_verified:
     session.pop('email')
     info='Login Success'
-    if (verifyLoginToken):
+    if verifyLoginToken(request.cookies.get('token')):
       info='Setup Success'
     resp = make_response(redirect(url_for('getDashboard',info=info)))
     resp.set_cookie('token',generateLoginToken(email))
