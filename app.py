@@ -9,10 +9,10 @@ from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-createTable()
-
 app = Flask(__name__)
+app.secret_key = os.environ.get("APP_SECRET_KEY")
 
+createTable()
 
 @app.route('/')
 def landingPage():
@@ -34,7 +34,6 @@ def register():
   phone_number = request.form.get('phone_number')
   password = request.form.get('password')
   confirmPassword = request.form.get('confirmPassword')
-
   secret_key = secretKeyGenerator()
   user = User(email, name, address, phone_number, hashPassword(password), encryptSecretKey(secret_key))
   if (insertUser(user)):
@@ -45,7 +44,6 @@ def register():
     return resp
   else:
     return render_template('register.html',email=email,name=name,address=address,phone_number=phone_number,info="Email has already Used")
-
 
 @app.route('/login',methods = ['GET','POST'])
 def login():
@@ -62,14 +60,12 @@ def login():
     resp = render_template('login.html',info="Incorrect Email",email=email)
     return resp
   if hashedPassword == (user['password']):
-    app.secret_key = os.environ.get("APP_SECRET_KEY")
-    resp = render_template('totp.html')
     session['email'] = email
+    resp = render_template('totp.html')
     return resp
   else:
     resp = render_template('login.html',info="Incorrect Password",email=email)
     return resp
-
 
 @app.route('/dashboard',methods = ['GET','POST'])
 def getDashboard():
@@ -89,7 +85,6 @@ def setTwoFactorAuth():
     return redirect(url_for('login'))
   if request.method == 'GET':
     user = getUser(email) 
-    app.secret_key = os.environ.get("APP_SECRET_KEY")
     qrcode_image = generateQrCode(user)
     session['email'] = email
     return render_template('totp-setup.html', qrcode_image=qrcode_image)
@@ -104,7 +99,6 @@ def setTwoFactorAuth():
 
 @app.route('/2fa-verify',methods = ['GET','POST'])
 def verifyTwoFactorAuth():
-  app.secret_key = os.environ.get("APP_SECRET_KEY")
   email = session['email'] 
   if not email:
     return redirect(url_for('login'))
@@ -116,7 +110,10 @@ def verifyTwoFactorAuth():
   totp_verified = (totp == getTOTP(secret_key))
   if totp_verified:
     session.pop('email')
-    resp = make_response(redirect(url_for('getDashboard', info='Login Success')))
+    info='Login Success'
+    if (verifyLoginToken):
+      info='Setup Success'
+    resp = make_response(redirect(url_for('getDashboard',info=info)))
     resp.set_cookie('token',generateLoginToken(email))
     return resp
   return render_template('totp.html',info="Incorrect TOTP Code")
