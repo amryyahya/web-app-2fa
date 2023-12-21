@@ -61,7 +61,7 @@ def login():
     return resp
   if hashedPassword == (user['password']):
     session['email'] = email
-    resp = render_template('totp.html')
+    resp = render_template('totp-input.html')
     return resp
   else:
     resp = render_template('login.html',info="Incorrect Password",email=email)
@@ -103,7 +103,7 @@ def verifyTwoFactorAuth():
   if not email:
     return redirect(url_for('login'))
   if request.method == 'GET':
-    return render_template('totp.html')
+    return render_template('totp-input.html')
   totp = request.form.get('totp')
   user = getUser(email)
   secret_key = decryptSecretKey(user['secret_key'])
@@ -116,9 +116,9 @@ def verifyTwoFactorAuth():
     resp = make_response(redirect(url_for('getDashboard',info=info)))
     resp.set_cookie('token',generateLoginToken(email))
     return resp
-  return render_template('totp.html',info="Incorrect TOTP Code")
+  return render_template('totp-input.html',info="Incorrect TOTP Code")
 
-@app.route('/delete-account')
+@app.route('/delete-account', methods=['POST'])
 def deleteAccount():
   email = verifyLoginToken(request.cookies.get('token'))
   if deleteUser(email):
@@ -129,6 +129,11 @@ def logout():
   resp = make_response(redirect(url_for('login')))
   resp.set_cookie('token', '',expires=0)
   return resp
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return redirect(url_for('landingPage'))
 
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0', port=3000)
