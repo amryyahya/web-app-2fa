@@ -138,5 +138,3 @@ def getTOTP(secret_key):
     truncated_hash = hmac_value[offset:offset+4]
     totp = int.from_bytes(truncated_hash, byteorder='big') % (10**6)
     return str(totp).zfill(6)
-
-print(getTOTP(b'amry'))
