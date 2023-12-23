@@ -193,7 +193,6 @@ fun AuthList(
                     val maxTick = 30
                     LaunchedEffect(Unit) {
                         while(true) {
-                            delay(1.seconds)
                             val time = System.currentTimeMillis() / 1000
                             ticks = time % maxTick
                             Log.d("MainActivity", "Ticks: $ticks")
