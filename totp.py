@@ -118,7 +118,7 @@ def photon80(plain):
     return hashVal
 
 def hmac(key: bytes, message: bytes, hash_function):
-    block_size = 32
+    block_size = 16
     key = key + b'\x00' * (block_size - len(key))
     inner_padding = bytes(x ^ 0x36 for x in key)
     outer_padding = bytes(x ^ 0x5C for x in key)
