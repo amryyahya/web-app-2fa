@@ -1,9 +1,10 @@
 name: Deploy to Server
 
 on:
-  push:
-    branches:
-      - main 
+  workflow_run:
+    workflows: ["Build Docker Image"]
+    types:
+      - completed
 
 jobs:
   deploy:
