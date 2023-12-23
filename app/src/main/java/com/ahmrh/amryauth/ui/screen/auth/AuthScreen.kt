@@ -200,9 +200,7 @@ fun AuthList(
 
                             if(time % maxTick == 0L){
                                 Log.d("MainActivity", "Token changed to $token at $ticks")
-                                token = "Generating"
                                 coroutineScope.launch{
-                                    delay(1.seconds)
                                     token = TOTPFunction.generate(auth.key)
                                 }
                             }
