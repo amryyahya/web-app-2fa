@@ -84,10 +84,9 @@ def setTwoFactorAuth():
   session['email'] = email
   if not email:
     return redirect(url_for('login'))
-  if request.method == 'GET':
-    user = getUser(email) 
-    qrcode_image = generateQrCode(user)
-    return render_template('totp-setup.html', qrcode_image=qrcode_image)
+  user = getUser(email) 
+  qrcode_image = generateQrCode(user)
+  return render_template('totp-setup.html', qrcode_image=qrcode_image)
 
 @app.route('/2fa-verify',methods = ['GET','POST'])
 def verifyTwoFactorAuth():
