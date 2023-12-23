@@ -25,7 +25,7 @@ def verifyLoginToken(token):
     decoded_payload = jwt.decode(token, secret_key, algorithms=["HS256"])
     email = decoded_payload['email']
     return email
-  except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+  except Exception as e:
     return False
 
 def hashPassword(password):
