@@ -51,6 +51,7 @@ def login():
     email = verifyLoginToken(request.cookies.get('token'))
     if email:
       return redirect(url_for('getDashboard'))
+    resp.set_cookie('token', '',expires=0)
     return render_template('login.html')
   email = request.form.get('email')
   password = request.form.get('password')
