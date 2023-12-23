@@ -51,9 +51,7 @@ def login():
     email = verifyLoginToken(request.cookies.get('token'))
     if email:
       return redirect(url_for('getDashboard'))
-    resp = make_response(render_template('login.html'))
-    resp.set_cookie('token', '',expires=0)
-    return resp
+    return render_template('login.html') 
   email = request.form.get('email')
   password = request.form.get('password')
   hashedPassword = hashPassword(password)
@@ -76,7 +74,11 @@ def getDashboard():
   if not email:
     return redirect(url_for('login'))
   if request.method == 'GET':
-    user = getUser(email) 
+    user = getUser(email)
+    if not user:
+      resp = make_response(render_template('login.html'))
+      resp.set_cookie('token', '',expires=0)
+      return resp
     resp = render_template('dashboard.html',info=info, email=user['email'],name=user['name'],address=user['address'],phone_number=user['phone_number'])
     return resp
 
