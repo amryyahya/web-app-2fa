@@ -81,6 +81,7 @@ def getDashboard():
 @app.route('/2fa-setup')
 def setTwoFactorAuth():
   email = verifyLoginToken(request.cookies.get('token'))
+  session['email'] = email
   if not email:
     return redirect(url_for('login'))
   if request.method == 'GET':
