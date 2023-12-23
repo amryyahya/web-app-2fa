@@ -78,7 +78,7 @@ def getDashboard():
     resp = render_template('dashboard.html',info=info, email=user['email'],name=user['name'],address=user['address'],phone_number=user['phone_number'])
     return resp
 
-@app.route('/2fa-setup',methods = ['GET','POST'])
+@app.route('/2fa-setup')
 def setTwoFactorAuth():
   email = verifyLoginToken(request.cookies.get('token'))
   if not email:
@@ -86,16 +86,7 @@ def setTwoFactorAuth():
   if request.method == 'GET':
     user = getUser(email) 
     qrcode_image = generateQrCode(user)
-    session['email'] = email
     return render_template('totp-setup.html', qrcode_image=qrcode_image)
-  totp = request.form.get('totp')
-  user = getUser(email)
-  secret_key = decryptSecretKey(user['secret_key'])
-  totp_verified = (totp == getTOTP(secret_key))
-  if totp_verified:
-    resp = make_response(redirect(url_for('getDashboard', info='Two-Factor Auth Setup Successfully')))
-    return resp
-  return "failed"
 
 @app.route('/2fa-verify',methods = ['GET','POST'])
 def verifyTwoFactorAuth():
