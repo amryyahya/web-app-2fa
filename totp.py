@@ -1,4 +1,4 @@
-import time, math
+import time, math,decimal
 
 sbox = [0xc, 0x5, 0x6, 0xb, 0x9, 0x0, 0xa, 0xd, 0x3, 0xe, 0xf, 0x8, 0x4, 0x7, 0x1, 0x2]
 RC = [1, 3, 7, 14, 13, 11, 6, 12, 9, 2, 5, 10]
@@ -48,8 +48,7 @@ def shiftRows(X):
     X_prime = [[0 for j in range(D)] for i in range(D)]
     for i in range(D):
         for j in range(D):
-            new_col_index = (j + i) % D
-            X_prime[i][j] = X[i][new_col_index]
+            X_prime[i][j] = X[i][(j + i) % D]
     return X_prime
 
 def mixColumnSerial(X):
@@ -74,15 +73,13 @@ def permutation(State):
 
 def padding(m, r):
     m = m << 1 | 1
-    length = len(bin(m)) - 1
-    m <<= r - length % r
+    m <<= r - (len(bin(m)) - 1) % r
     return m
 
 def splitTo4BitsChunks(number):
     chunks = []
     while number > 0:
-        chunk = number & 0xF
-        chunks.append(chunk)
+        chunks.append(number & 0xF)
         number >>= S
     chunks.reverse()
     return chunks
@@ -109,33 +106,35 @@ def photon80(plain):
             m_index+=1
         State = permutation(State)
     hashVal=0
-    while(len(hex(hashVal))-2<N//S):
+    hashVal_size=0
+    while(hashVal_size<N):
         ro=R_OUT
         for i in range(D):
             if ro<=0:break
             for j in range(D):
                 if ro<=0: break
                 hashVal = (hashVal << 4) | (State[i][j]&0xf)
+                hashVal_size+=4
                 ro-=S
         State=permutation(State)
     return hashVal.to_bytes(10, 'big')
 
-def hmac(key: bytes, message: bytes, hash_function):
-    key = hash_function(key)
+def hmac(key: bytes, message: bytes):
+    key = photon80(key)
     inner_padding = bytes(x ^ 0x36 for x in key)
     outer_padding = bytes(x ^ 0x5C for x in key)
     inner_hash_input = inner_padding + message
-    inner_hash = hash_function(inner_hash_input)
+    inner_hash = photon80(inner_hash_input)
     outer_hash_input = outer_padding + inner_hash
-    outer_hash = hash_function(outer_hash_input)
+    outer_hash = photon80(outer_hash_input)
     return outer_hash
 
 def getTOTP(secret_key):
     current_epoch = int(time.time())
     time_counter = math.floor(current_epoch/30)
     message = time_counter.to_bytes(8, byteorder='big')
-    hmac_value = hmac(secret_key, message, photon80)
-    offset = hmac_value[-1]%16
+    hmac_value = hmac(secret_key, message)
+    offset = (hmac_value[-1]%16)//2
     truncated_hash = hmac_value[offset:offset+4]
     totp = int.from_bytes(truncated_hash, byteorder='big') % (10**6)
     return str(totp).zfill(6)
