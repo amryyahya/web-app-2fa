@@ -32,8 +32,6 @@ FieldMult  = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               [0, 13, 9, 4, 1, 12, 8, 5, 2, 15, 11, 6, 3, 14, 10, 7],
               [0, 14, 15, 1, 13, 3, 2, 12, 9, 7, 6, 8, 4, 10, 11, 5],
               [0, 15, 13, 2, 9, 6, 4, 11, 1, 14, 12, 3, 8, 7, 5, 10]]
-D1Template = [0 for _ in range(D)]
-D2Template = [[0 for j in range(D)] for i in range(D)]
 
 def addConstant(X, k):
     for i in range(D):

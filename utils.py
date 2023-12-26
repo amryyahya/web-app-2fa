@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-def generateLoginToken(email, two_factor=False):
+def generateLoginToken(email):
   expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=3)
   payload = {
     "email": email,
