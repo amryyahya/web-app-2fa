@@ -51,7 +51,7 @@ def shiftRows(X):
             X_prime[i][j] = X[i][(j + i) % D]
     return X_prime
 
-def mixColumnSerial(X):
+def mixColumnsSerial(X):
     tmp=[0 for _ in range(D)]
     for j in range(D):
         for i in range(D):
@@ -68,7 +68,7 @@ def permutation(State):
         State = addConstant(State, i)
         State = subCells(State)
         State = shiftRows(State)
-        State = mixColumnSerial(State)
+        State = mixColumnsSerial(State)
     return State
 
 def padding(m, r):
