@@ -68,7 +68,7 @@ def generateQrCode(user):
     box_size=10,
     border=4,
   )
-  secret_key = decryptSecretKey(user['secret_key']).decode('utf-8')
+  secret_key = decryptSecretKey(user['secret_key'])
   email = user['email']
   data = f"otpauth://totp/:Amry%20Site?secret={secret_key}&user={email}"
   qr.add_data(data)
