@@ -8,32 +8,6 @@ from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-def generateLoginToken(email):
-  expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=3)
-  payload = {
-    "email": email,
-    "exp": expiration_time
-  }
-  secret_key = os.environ.get("JWT_SECRET_KEY")
-  return jwt.encode(payload, secret_key, algorithm="HS256")
-
-def verifyLoginToken(token):
-  if token is None:
-    return False
-  try:
-    secret_key = os.environ.get("JWT_SECRET_KEY")
-    decoded_payload = jwt.decode(token, secret_key, algorithms=["HS256"])
-    email = decoded_payload['email']
-    return email
-  except Exception as e:
-    return False
-
-def hashPassword(password):
-  sha256_hash = hashlib.sha256()
-  sha256_hash.update(password.encode('utf-8'))
-  hashedPassword = sha256_hash.hexdigest()
-  return hashedPassword
-
 def secretKeyGenerator():
   characters = string.ascii_letters + string.digits
   secret_key = ''.join(random.choice(characters) for i in range(32)).encode('utf-8')
@@ -60,21 +34,3 @@ def decryptSecretKey(encrypted):
   unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
   plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
   return plaintext.decode('utf-8')
-
-def generateQrCode(user):
-  qr = qrcode.QRCode(
-    version=1,
-    error_correction=qrcode.constants.ERROR_CORRECT_L,
-    box_size=10,
-    border=4,
-  )
-  secret_key = decryptSecretKey(user['secret_key']).decode('utf-8')
-  email = user['email']
-  data = f"otpauth://totp/:Amry%20Site?secret={secret_key}&user={email}"
-  qr.add_data(data)
-  qr.make(fit=True)
-  img = qr.make_image(fill_color="black", back_color="white")
-  img_buffer = io.BytesIO()
-  img.save(img_buffer)
-  img_buffer.seek(0)
-  return base64.b64encode(img_buffer.read()).decode('utf-8')
