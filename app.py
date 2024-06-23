@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, make_response,redirect, url_for, session
 from user import User
 import os
-from utils import generateLoginToken, verifyLoginToken, hashPassword, secretKeyGenerator, encryptSecretKey, decryptSecretKey, generateQrCode
-from totp import getTOTP
+from utils import generateLoginToken, verifyLoginToken, hashPassword, secretKeyGenerator, encryptSecretKey, decryptSecretKey, generateQrCode,getTOTP
 from user_management import createTable, insertUser, getUser, deleteUser
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -131,4 +130,4 @@ def catch_all(path):
     return redirect(url_for('landingPage'))
 
 if __name__ == '__main__':
-  app.run(host='0.0.0.0')
+  app.run(host='0.0.0.0', debug=True)

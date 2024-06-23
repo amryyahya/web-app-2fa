@@ -1,4 +1,4 @@
-import hashlib, qrcode, io, os, base64, string, random, jwt, datetime
+import hashlib, qrcode, io, os, base64, string, random, jwt, datetime, ctypes
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
@@ -7,6 +7,13 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
+
+def getTOTP(secret_key):
+    lib = ctypes.CDLL('./totp-hmac-photon.so')
+    lib.getTOTP.restype = ctypes.c_int
+    lib.getTOTP.argtypes = [ctypes.c_char_p]
+    totp = lib.getTOTP(secret_key)
+    return str(totp).zfill(6)
 
 def generateLoginToken(email):
   expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=3)
@@ -59,7 +66,7 @@ def decryptSecretKey(encrypted):
   padded_plaintext = decryptor.update(encrypted) + decryptor.finalize()
   unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
   plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
-  return plaintext.decode('utf-8')
+  return plaintext
 
 def generateQrCode(user):
   qr = qrcode.QRCode(
