@@ -1,21 +1,14 @@
-FROM ubuntu
+FROM python310
 
-# Install Python and pip
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip python3-venv && \
-    apt-get clean
+    apt-get install -y python3 python3-pip
 
 WORKDIR /app
 
 COPY . /app
 
-# Create a virtual environment
-RUN python3 -m venv venv
-
-# Activate the virtual environment and install dependencies
-RUN /bin/bash -c "source venv/bin/activate && pip install --no-cache-dir -r requirements.txt"
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
 
-# Use the virtual environment to run the application
-CMD ["venv/bin/python3", "app.py"]
+CMD ["python3", "app.py"]
