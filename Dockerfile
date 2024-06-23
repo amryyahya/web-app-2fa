@@ -18,4 +18,4 @@ RUN /bin/bash -c "source venv/bin/activate && pip install --no-cache-dir -r requ
 EXPOSE 5000
 
 # Use the virtual environment to run the application
-CMD ["venv/bin/python", "app.py"]
+CMD ["venv/bin/python3", "app.py"]
