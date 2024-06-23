@@ -2,3 +2,4 @@ Flask
 qrcode
 cryptography
 python-dotenv
+PyJWT
