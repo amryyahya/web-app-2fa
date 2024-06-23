@@ -1,7 +1,9 @@
 FROM ubuntu
 
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip
+    apt-get install -y python3 pipx && \
+    pipx ensurepath && \
+    sudo pipx ensurepath --global
 
 WORKDIR /app
 
