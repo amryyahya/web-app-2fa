@@ -1,5 +1,4 @@
 Flask
 qrcode
-PyJWT
 cryptography
 python-dotenv
