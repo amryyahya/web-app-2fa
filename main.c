@@ -113,7 +113,7 @@ int getTOTP(char* keystring)
 }
 
 int main(){
-    char key[] = "GKdPyxx3tDw7ogEJvhj0ru3NZPNfE2iq";
+    char key[] = "otpauth://totp/:Amry%20Site?secret=kuaaaaaaad&user=amryyahya@mail.com";
     int totp = getTOTP(key);
     printf("%d\n", totp);
         int totp2 = getTOTP(key);
