@@ -9,9 +9,9 @@ import jpype
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
+jpype.startJVM(classpath=['.'])
 
 def getTOTP(secret_key):
-    jpype.startJVM(classpath=['.'])
     # lib = ctypes.CDLL('./totp-hmac-photon.so')
     # lib.getTOTP.restype = ctypes.c_int
     # lib.getTOTP.argtypes = [ctypes.c_char_p]
