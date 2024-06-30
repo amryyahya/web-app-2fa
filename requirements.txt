@@ -3,3 +3,4 @@ qrcode
 cryptography
 python-dotenv
 PyJWT
+jpype1
