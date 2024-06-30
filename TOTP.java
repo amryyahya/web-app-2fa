@@ -15,6 +15,8 @@
  import javax.crypto.spec.SecretKeySpec;
  import java.math.BigInteger;
  import java.util.Scanner;
+ import java.time.Instant;
+
 
 
  /**
@@ -160,11 +162,6 @@
          byte[] msg = hexStr2Bytes(time);
          byte[] k = hexStr2Bytes(key);
          byte[] hash = hmac_sha(crypto, k, msg);
-         System.out.print("HMAC Digest(hex): ");
-         for (int i = 0; i < hash.length; i++) {
-            System.out.print(String.format("%02x", hash[i]));
-         }
-         System.out.println();
          // put selected bytes into result int
          int offset = hash[hash.length - 1] & 0xf;
 
@@ -183,30 +180,16 @@
          return result;
      }
 
-     public static void main(String[] args) {
+     public static String TOTP(String key) {
         long T0 = 0;
         long X = 30;
-        Scanner sc=new Scanner(System.in);
-        String key=sc.next();
-        long time=sc.nextLong();
-        sc.close();
-        
-        long start = System.nanoTime();
-
-        System.out.println("Key: "+key);
+        long time = Instant.now().getEpochSecond();
         String keyHex = String.format("%040x", new BigInteger(1, key.getBytes()));
         long T = (time - T0)/X;
         String steps = Long.toHexString(T).toUpperCase();
         while (steps.length() < 16) steps = "0" + steps;
-        System.out.println("Time Steps(hex): "+steps);
-        String totp = generateTOTP(keyHex, steps, "6", "HmacSHA1");
-        System.out.println("TOTP: " + totp);
-        
-        long end = System.nanoTime();
-        
-        double exectime=(double)(end - start)/ 1000000000;
-        System.out.println(String.format("Exec Time: %.3f", exectime));
-
+        String totp = generateTOTP(keyHex, steps, "6", "HmacSHA256");
+        return totp;
         }
      
  }
