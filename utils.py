@@ -6,7 +6,7 @@ from base64 import urlsafe_b64encode, urlsafe_b64decode
 from os.path import join, dirname
 from dotenv import load_dotenv
 import jpype
-
+jpype.startJVM(classpath=['.'])
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -17,10 +17,8 @@ def getTOTP(secret_key):
     # lib.getTOTP.argtypes = [ctypes.c_char_p]
     # totp = lib.getTOTP(secret_key)
     # return str(totp).zfill(6)
-    jpype.startJVM(classpath=['.'])
     TOTPGenerator = jpype.JClass('TOTP')
     totp = TOTPGenerator.TOTP(secret_key)
-    jpype.shutdownJVM()
     return totp;
 
 def generateLoginToken(email):
