@@ -6,12 +6,12 @@ from base64 import urlsafe_b64encode, urlsafe_b64decode
 from os.path import join, dirname
 from dotenv import load_dotenv
 import jpype
-jpype.startJVM(classpath=['.'])
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 def getTOTP(secret_key):
+    jpype.startJVM(classpath=['.'])
     # lib = ctypes.CDLL('./totp-hmac-photon.so')
     # lib.getTOTP.restype = ctypes.c_int
     # lib.getTOTP.argtypes = [ctypes.c_char_p]
