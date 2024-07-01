@@ -1,32 +1,39 @@
-name: Deploy to Server
+name: Deploy to Cloud Run
 
 on:
-  workflow_run:
-    workflows: ["Build and Push Docker Image"]
-    types:
-      - completed
+  push:
+    branches:
+      - main 
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.5.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.9.1
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            docker pull ghcr.io/amryyahya/web-app-2fa:latest
-            docker stop web-app-2fa
-            docker rm web-app-2fa
-            docker run -d --name web-app-2fa -p 5000:5000 ghcr.io/amryyahya/web-app-2fa:latest
+    - name: Configure Docker authentication
+      run: |
+        gcloud auth configure-docker
+
+    - name: Build and push Docker image
+      run: |
+        IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT }}/web-app-2fa
+        docker build -t $IMAGE_NAME .
+        docker push $IMAGE_NAME
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy web-app-2fa \
+          --image gcr.io/${{ secrets.GCP_PROJECT }}/web-app-2fa \
+          --platform managed \
+          --region us-west1 \
+          --allow-unauthenticated
