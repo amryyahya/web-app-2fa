@@ -22,18 +22,18 @@ jobs:
 
     - name: Configure Docker authentication
       run: |
-        gcloud auth configure-docker
+        gcloud auth configure-docker us-west1-docker.pkg.dev
 
     - name: Build and push Docker image
       run: |
-        IMAGE_NAME=gcr.io/${{ secrets.GCP_PROJECT }}/web-app-2fa
+        IMAGE_NAME=us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/web-app-2fa
         docker build -t $IMAGE_NAME .
         docker push $IMAGE_NAME
 
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy web-app-2fa \
-          --image gcr.io/${{ secrets.GCP_PROJECT }}/web-app-2fa \
+          --image us-west1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/web-app-2fa \
           --platform managed \
           --region us-west1 \
           --allow-unauthenticated
