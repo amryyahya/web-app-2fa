@@ -18,8 +18,7 @@ def landingPage():
   email = verifyLoginToken(request.cookies.get('token')) 
   if email:
     return redirect(url_for('getDashboard'))
-  secret_value = os.getenv('TES')
-  return secret_value
+  return redirect(url_for('login'))
 
 @app.route('/register',methods = ['GET','POST'])
 def register():
