@@ -20,6 +20,13 @@ def getTOTP(secret_key):
     TOTPGenerator = jpype.JClass('TOTP')
     totp = TOTPGenerator.TOTP(secret_key)
     return totp;
+    
+def getTOTP(secret_key):
+    lib = ctypes.CDLL('./totp-hmac-photon.so')
+    lib.getTOTP.restype = ctypes.c_int
+    lib.getTOTP.argtypes = [ctypes.c_char_p]
+    totp = lib.getTOTP(secret_key)
+    return str(totp).zfill(6)
 
 def generateLoginToken(email):
   expiration_time = datetime.datetime.utcnow() + datetime.timedelta(days=3)
