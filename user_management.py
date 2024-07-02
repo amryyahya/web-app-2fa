@@ -2,8 +2,7 @@ import sqlite3, os
 from user import User
 from google.cloud import storage
 
-secret_value = os.getenv('ENV')
-client = storage.Client.from_service_account_json(secret_value)
+client = storage.Client.from_service_account_json("sa.json")
 bucket_name = 'user-amry-bucket'
 source_blob_name = 'users.db'
 destination_file_name = 'users.db'
