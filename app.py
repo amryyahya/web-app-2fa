@@ -19,8 +19,7 @@ def landingPage():
   if email:
     return redirect(url_for('getDashboard'))
   secret_value = os.getenv('TES')
-  print(secret_value)
-  return redirect(url_for('login'))
+  return secret_value
 
 @app.route('/register',methods = ['GET','POST'])
 def register():
