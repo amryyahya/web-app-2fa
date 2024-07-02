@@ -1,18 +1,27 @@
-def getTOTP(secret_key, message):
-    # current_epoch = int(time.time())
-    # time_counter = math.floor(current_epoch/30)
-    # message = time_counter.to_bytes(8, byteorder='big')
-    hmac_value = hmac(secret_key, message)
-    offset = (hmac_value[-1]%16)//2
-    truncated_hash = hmac_value[offset:offset+4]
-    totp = int.from_bytes(truncated_hash, byteorder='big') % (10**6)
-    return str(totp).zfill(6)
+import jpype
+jpype.startJVM(classpath=['.'])
+
+def getTOTP(secret_key,time):
+    TOTPGenerator = jpype.JClass('TOTP')
+    totp = TOTPGenerator.TOTP(secret_key,time)
+    return totp
+
+obtained_totp = "841586"
+obtained_time = 1719885656
 
 import itertools
-characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-compinations = itertools.product(characters, repeat=16)
-for combo in compinations:
-    alphanumericstr=''.join(combo)
-    tried_secret = alphanumericstr.encode('utf-8')
-    if getTOTP(tried_secret, message=b'\x00\x00\x00\x00\x03b\x85\xbf') == '930075':
+def birthday_attack():
+    characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    combinations = itertools.product(characters, repeat=32)
+    getPossibleSecret = False
+    for combo in combinations:
+        alphanumericstr=''.join(combo)
+        tried_secret = alphanumericstr.encode('utf-8')
+        tried_secret = b'gbOJmc8at8frcro1bV8MxD2ChcIg99ZV'
         print(tried_secret)
+        if getTOTP(tried_secret, obtained_time) == obtained_totp:
+        with open("possible_secret.txt", "a") as file:
+            file.write(tried_secret.decode('utf-8')+"\n")
+            return True
+
+birthday_attack()
