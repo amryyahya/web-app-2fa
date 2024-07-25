@@ -81,6 +81,16 @@ def decryptSecretKey(encrypted):
   plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
   return plaintext
 
+def encryptQrCode(plain):
+  key = os.environ.get("QRCODE_KEY").encode('utf-8')
+  iv = os.environ.get("QRCODE_IV").encode('utf-8')
+  padder = padding.PKCS7(algorithms.AES.block_size).padder()
+  padded_plaintext = padder.update(plain) + padder.finalize()
+  cipher = Cipher(algorithms.AES(key), modes.CFB(iv), backend=default_backend())
+  encryptor = cipher.encryptor()
+  ciphertext = encryptor.update(padded_plaintext) + encryptor.finalize()
+  return urlsafe_b64encode(iv + ciphertext).decode('utf-8')
+
 def generateQrCode(user):
   qr = qrcode.QRCode(
     version=1,
@@ -88,7 +98,7 @@ def generateQrCode(user):
     box_size=10,
     border=4,
   )
-  secret_key = decryptSecretKey(user['secret_key'])
+  secret_key = encryptQrCode(decryptSecretKey(user['secret_key']))
   email = user['email']
   data = f"otpauth://totp/:Amry%20Site?secret={secret_key.decode('utf-8')}&user={email}"
   qr.add_data(data)
