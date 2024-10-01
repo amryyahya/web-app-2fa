@@ -12,7 +12,7 @@ This project is a simple web application built with Python Flask as the backend,
 - **Backend**: Python Flask
 - **Authentication**: 
   - JWT (JSON Web Tokens) for secure token-based authentication.
-  - TOTP with HMAC-Photon for 2FA.
+  - TOTP with HMAC-[Photon](https://eprint.iacr.org/2011/609.pdf) for 2FA.
 - **Frontend**: Simple HTML/CSS (can be extended as needed).
 
 ## Installation
