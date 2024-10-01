@@ -16,7 +16,7 @@ This project is a simple web application built with Python Flask as the backend,
 - **Frontend**: Simple HTML/CSS (can be extended as needed).
 
 ## Installation
-### Method : Using Docker (Make sure [docker-engine](https://docs.docker.com/engine/install/) have been installed on your device
+### Method : Using Docker (Make sure [docker-engine](https://docs.docker.com/engine/install/) have been installed on your device)
 1. Clone the repository:
    ```bash
    git clone https://github.com/amryyahya/web-app-2fa.git
@@ -34,7 +34,7 @@ This project is a simple web application built with Python Flask as the backend,
     docker build -t web-app-2fa .
     docker run -p 5000:5000 web-app-2fa
 
-### Method 2: Install Python Locally (Make sure [python3](https://www.python.org/downloads/) and [pip](https://pypi.org/project/pip/) have been installed on your device
+### Method 2: Install Python Locally (Make sure [python3](https://www.python.org/downloads/) and [pip](https://pypi.org/project/pip/) have been installed on your device)
 1. Clone the repository:
    ```bash
    git clone https://github.com/amryyahya/web-app-2fa.git
