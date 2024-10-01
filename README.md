@@ -70,4 +70,4 @@ This project is licensed under the MIT License.
 This project was developed as the output of my S1 thesis.
 
 ## Others
-Thanks to [ahmrh](github.com/ahmrh) for deploying the [authenticator app](https://drive.google.com/file/d/1y7Qqct3u6K2VhHkKsFInFNykRPKU8hC0/view?usp=sharing) (It uses a QR code for the encryption key and initial value, as defined in the .env file)
+Thanks to [ahmrh](github.com/ahmrh) for deploying the [authenticator app](https://drive.google.com/file/d/1y7Qqct3u6K2VhHkKsFInFNykRPKU8hC0/view?usp=sharing) (It uses QR code encryption key and initial value, as defined in the .env file)
