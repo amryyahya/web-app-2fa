@@ -68,3 +68,6 @@ This project is licensed under the MIT License.
 
 ## Acknowledgements
 This project was developed as the output of my S1 thesis.
+
+## Others
+Thanks to [ahmrh](github.com/ahmrh) who deployed the [authenticator app](https://drive.google.com/file/d/1y7Qqct3u6K2VhHkKsFInFNykRPKU8hC0/view?usp=sharing)
