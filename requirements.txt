@@ -4,4 +4,3 @@ cryptography
 python-dotenv
 PyJWT
 jpype1 
-google-cloud-storage

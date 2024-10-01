@@ -67,7 +67,7 @@ def encryptSecretKey(plain):
   cipher = Cipher(algorithms.AES(key), modes.CFB(iv), backend=default_backend())
   encryptor = cipher.encryptor()
   ciphertext = encryptor.update(padded_plaintext) + encryptor.finalize()
-  return urlsafe_b64encode(iv + ciphertext).decode('utf-8')
+  return urlsafe_b64encode(iv + ciphertext)
 
 def decryptSecretKey(encrypted):
   key = os.environ.get("AES_SECRET_KEY").encode('utf-8')
@@ -100,7 +100,7 @@ def generateQrCode(user):
   )
   secret_key = encryptQrCode(decryptSecretKey(user['secret_key']))
   email = user['email']
-  data = f"otpauth://totp/:Amry%20Site?secret={secret_key.decode('utf-8')}&user={email}"
+  data = f"otpauth://totp/:Amry%20Site?secret={secret_key}&user={email}"
   qr.add_data(data)
   qr.make(fit=True)
   img = qr.make_image(fill_color="black", back_color="white")

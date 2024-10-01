@@ -1,7 +1,7 @@
 FROM debian:11-slim
 
 RUN apt-get update && \
-    apt-get install -y python3-pip openjdk-11-jre-headless
+    apt-get install -y python3-pip
 
 WORKDIR /app
 
